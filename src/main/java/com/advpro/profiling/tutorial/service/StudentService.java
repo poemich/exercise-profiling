@@ -2,7 +2,6 @@ package com.advpro.profiling.tutorial.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,22 +28,13 @@ public class StudentService {
     }
 
     public Optional<Student> findStudentWithHighestGpa() {
-        List<Student> students = studentRepository.findAll();
-        Student highestGpaStudent = null;
-        double highestGpa = 0.0;
-        for (Student student : students) {
-            if (student.getGpa() > highestGpa) {
-                highestGpa = student.getGpa();
-                highestGpaStudent = student;
-            }
-        }
+        Student highestGpaStudent = studentRepository.findTopByOrderByGpaDesc();
         return Optional.ofNullable(highestGpaStudent);
     }
 
     public String joinStudentNames() {
-        return studentRepository.findAll().stream()
-                .map(Student::getName)
-                .collect(Collectors.joining(", "));
+        List<String> names = studentRepository.findAllStudentNames();
+        return String.join(", ", names);
     }
 }
 
